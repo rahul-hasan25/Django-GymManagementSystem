@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-7">
+            <h1 class="mb-3">Welcome to FlexPoint</h1>
+            <p>Every workout counts. Stay strong, stay focused, and keep pushing toward your goals.</p>
+            <p>Manage your plans, attendance, and progress all in one place.</p>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    Contact or Inquiry
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" required>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" required>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="mobile" class="form-label">Mobile</label>
+                            <input type="number" class="form-control" id="mobile" name="mobile" required maxlength="15" placeholder="Enter Mobile Number">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" name="message" required placeholder="Write your message here"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
