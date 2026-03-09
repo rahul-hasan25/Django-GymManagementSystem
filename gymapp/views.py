@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import *
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
@@ -39,6 +40,15 @@ def admin_login_view(request):
     return render(request, 'admin_login.html')
 
 
+def admin_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated or getattr(request.user, 'role', None) != 'ADMIN':
+            messages.error(request, 'You must be an Admin to access this page.')
+            return redirect('admin_login_view')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+@admin_required
 def admin_dashboard(request):
     return render(request, 'admin_dashboard.html')
 
@@ -47,3 +57,64 @@ def logout_view(request):
     logout(request)
     messages.info(request, 'Logged out successfully!')
     return redirect('home')
+
+
+@admin_required
+def admin_plans_list(request):
+    plans = MembershipPlan.objects.all().order_by('duration_months')
+    return render(request, 'admin_plans_list.html', {'plans':plans})
+
+
+@admin_required
+def admin_plan_add(request):
+    if request.method == 'POST':
+        name            = request.POST.get('name')
+        duration_months = request.POST.get('duration_months')
+        fee             = request.POST.get('fee')
+        description     = request.POST.get('description')
+        
+        if name and duration_months and fee:
+            MembershipPlan.objects.create(
+                name=name,
+                duration_months=duration_months,
+                fee=fee,
+                description=description,
+            )
+            messages.success(request, 'Membership Plan added successfully!')
+            return redirect('admin_plans_list')
+        else:
+            messages.error(request, 'Please Fill in all required fields.')
+    return render(request, 'admin_plan_form.html', {'mode':'add'})
+
+
+@admin_required
+def admin_plan_edit(request, plan_id):
+    plan = MembershipPlan.objects.get(id=plan_id)
+    if request.method == 'POST':
+        name            = request.POST.get('name')
+        duration_months = request.POST.get('duration_months')
+        fee             = request.POST.get('fee')
+        description     = request.POST.get('description')
+        
+        if name and fee and duration_months:
+            plan.name            = name
+            plan.duration_months = duration_months
+            plan.fee             = fee
+            plan.description     = description
+            plan.save()
+            
+            messages.success(request, 'Membership Plan Updated Successfully!')
+            return redirect('admin_plans_list')
+        else:
+            messages.error(request, 'Please Fill in all required fields.')
+    return render(request, 'admin_plan_form.html', {'plan': plan, 'mode':'edit'})
+
+
+@admin_required
+def admin_plan_delete(request, plan_id):
+    plan = MembershipPlan.objects.get(id=plan_id)
+    if request.method == 'POST':
+        plan.delete()
+        messages.success(request, 'Membership Plan Deleted Successfully.')
+        return redirect('admin_plans_list')
+    return redirect('admin_plans_list.html')
