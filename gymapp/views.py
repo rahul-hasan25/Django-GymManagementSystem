@@ -117,4 +117,66 @@ def admin_plan_delete(request, plan_id):
         plan.delete()
         messages.success(request, 'Membership Plan Deleted Successfully.')
         return redirect('admin_plans_list')
-    return redirect('admin_plans_list.html')
+    return redirect('admin_plans_list')
+
+
+# ADMIN Trainer
+@admin_required
+def admin_trainers_list(request):
+    trainers = Trainer.objects.all().order_by('name')
+    return render(request, 'admin_trainers_list.html', {'trainers': trainers})
+
+
+@admin_required
+def admin_trainer_add(request):
+    if request.method == 'POST':
+        name           = request.POST.get('name')
+        mobile         = request.POST.get('mobile')
+        specialization = request.POST.get('specialization')
+        shift_timings  = request.POST.get('shift_timings')
+        
+        if name and mobile and specialization and shift_timings:
+            Trainer.objects.create(
+                name           = name,
+                mobile         = mobile,
+                specialization = specialization,
+                shift_timings  = shift_timings,
+            )
+            messages.success(request, 'Trainer added successfully!')
+            return redirect('admin_trainers_list')
+        else:
+            messages.error(request, 'Please fill in the all required fields.')
+    return render(request, 'admin_trainer_form.html', {'mode':'add'})
+
+
+@admin_required
+def admin_trainer_edit(request, trainer_id):
+    trainer = Trainer.objects.get(id=trainer_id)
+    if request.method == 'POST':
+        name           = request.POST.get('name')
+        mobile         = request.POST.get('mobile')
+        specialization = request.POST.get('specialization')
+        shift_timings  = request.POST.get('shift_timings')
+        
+        if name and mobile and specialization and shift_timings:
+            trainer.name           = name
+            trainer.mobile         = mobile
+            trainer.specialization = specialization
+            trainer.shift_timings  = shift_timings
+            trainer.save()
+            
+            messages.success(request, 'Trainer Updated Successfully!')
+            return redirect('admin_trainers_list')
+        else:
+            messages.error(request, 'Please fill in the all required fields.')
+    return render(request, 'admin_trainer_form.html', {'trainer':trainer, 'mode':'edit'})
+
+
+@admin_required
+def admin_trainer_delete(request, trainer_id):
+    trainer = Trainer.objects.get(id=trainer_id)
+    if request.method == 'POST':
+        trainer.delete()
+        messages.success(request, 'Trainer Deleted Successfully!')
+        return redirect('admin_trainers_list')
+    return redirect('admin_trainers_list')
