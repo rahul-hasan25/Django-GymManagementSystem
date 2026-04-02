@@ -22,4 +22,7 @@ urlpatterns = [
     path('admin_member_add/', views.admin_member_add, name='admin_member_add'),
     path('admin_member_edit/<int:member_id>/', views.admin_member_edit, name='admin_member_edit'),
     path('admin_member_delete/<int:member_id>/', views.admin_member_delete, name='admin_member_delete'),
+    #ADMIN Attendance
+    path('admin_attendaces/', views.admin_attendance_list, name='admin_attendance_list'),
+    path('admin_attendance_add/', views.admin_attendance_add, name='admin_attendance_add'),
 ]

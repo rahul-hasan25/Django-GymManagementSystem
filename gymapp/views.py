@@ -184,8 +184,11 @@ def admin_trainer_delete(request, trainer_id):
 # ADMIN Members
 @admin_required
 def admin_members_list(request):
+    search = request.GET.get('search', '')
     members = MemberProfile.objects.all().select_related('user', 'plan')
-    return render(request, 'admin_members_list.html', {'members':members})
+    if search:
+        members = members.filter(full_name__icontains=search)
+    return render(request, 'admin_members_list.html', {'members':members, 'search':search})
 
 
 @admin_required
@@ -274,3 +277,42 @@ def admin_member_delete(request, member_id):
         messages.success(request, 'Member Deleted Successfully!')
         return redirect('admin_members_list')
     return redirect('admin_members_list')
+
+
+# ADMIN Attendance
+@admin_required
+def admin_attendance_list(request):
+    today       = timezone.now().date()
+    date        = request.GET.get('date', today)
+    member_id   = request.GET.get('member_id')
+    attendances = Attendance.objects.all().select_related('member').filter(date=date)
+    members     = MemberProfile.objects.all().order_by('full_name')
+    
+    if member_id:
+        attendances = attendances.filter(member_id=member_id)
+    
+    return render(request, 'admin_attendance_list.html', {'attendances':attendances, 'members':members, 'today':today, 'selected_member_id':member_id, 'selected_date':date})
+
+
+def admin_attendance_add(request):
+    members = MemberProfile.objects.all().order_by('full_name')
+    
+    if request.method == 'POST':
+        member_id = request.POST.get('member_id')
+        date      = request.POST.get('date')
+        time_in   = request.POST.get('time_in')
+        
+        if not member_id:
+            messages.error(request, 'Please select a member.')
+            return redirect('admin_attendance_add')
+        
+        member = MemberProfile.objects.get(id=member_id)
+        
+        attendace, created = Attendance.objects.get_or_create(member=member, date=date, time_in=time_in)
+        
+        if not created:
+            attendace.time_in = time_in
+            attendace.save()
+            messages.info(request, 'Attendace Updated Successfully!')
+        messages.success(request, 'Attendance recorded successfully!')
+    return render(request, 'admin_attendance_form.html', {'members':members})

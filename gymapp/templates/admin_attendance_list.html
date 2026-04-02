@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Attendace ({{ selected_date }})</h2>
+    <a href="{% url 'admin_attendance_add' %}" class="btn btn-primary">Mark Attendace</a>
+</div>
+
+<form method="GET" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <label class="form-label">Date</label>
+        <input type="date" name="date" class="form-control" value="{{ selected_date }}">
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Member</label>
+        <select name="member_id" class="form-select">
+            <option value="">All Members</option>
+            {% for member in members %}
+                <option value="{{ member.id }}" {% if member.id|stringformat:"s" == selected_member_id %}selected{% endif %}> {{ member.full_name }} </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-secondary">Search</button>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Member</th>
+            <th>Date</th>
+            <th>Time In</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for attendance in attendances %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ attendance.member }}</td>
+            <td>{{ attendance.date }}</td>
+            <td>{{ attendance.time_in }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td class="text-center" colspan="4">No Attendance records found!</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
