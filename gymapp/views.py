@@ -378,3 +378,22 @@ def admin_equipment_delete(request, equipment_id):
         messages.success(request, 'Equipment Deleted Successfully!')
         return redirect('admin_equipment_list')
     return redirect('admin_equipment_list')
+
+
+# ADMIN Enquiries
+@admin_required
+def admin_enquiries_list(request):
+    enquiries = Enquiry.objects.all().order_by('-created_at')
+    return render(request, 'admin_enquiries_list.html', {'enquiries':enquiries})
+
+@admin_required
+def admin_enquiry_update_status(request,enquiry_id):
+    if request.method == 'POST':
+        status  = request.POST.get('status')
+        enquiry = Enquiry.objects.get(id=enquiry_id)
+        
+        if status in ['NEW', 'SEEN', 'RESOLVED']:
+            enquiry.status = status
+            enquiry.save()
+            messages.success(request, 'Enquiry Updated Successfully!')
+    return redirect('admin_enquiries_list')
