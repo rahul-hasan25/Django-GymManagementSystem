@@ -33,5 +33,8 @@ urlpatterns = [
     #ADMIN Enquiry
     path('admin_enquiries_list/', views.admin_enquiries_list, name='admin_enquiries_list'),
     path('admin_enquiries_list_update/<int:enquiry_id>/', views.admin_enquiry_update_status, name='admin_enquiry_update_status'),
-    
+    #ADMIN Workout Plan
+    path('admin_workout_plans/', views.admin_workout_plans_list, name='admin_workout_plans_list'),
+    path('admin_workout_plan_add/', views.admin_workout_plan_add, name='admin_workout_plan_add'),
+    path('admin_workout_plan_delete/<int:plan_id>/', views.admin_workout_plan_delete, name='admin_workout_plan_delete'),
 ]

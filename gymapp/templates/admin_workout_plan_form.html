@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<h2 class="mb-3">Add Workout Plan</h2>
+
+<form method="POST" class="row g-3 w-75">
+    {% csrf_token %}
+
+    <div class="col-md-6">
+        <label class="form-label">Members</label>
+        <select name="member_id" class="form-select" required>
+            <option value="">Select Member</option>
+            {% for member in members %}
+                <option value="{{ member.id }}"> {{ member.full_name }} ({{ member.user.username }}) </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-6">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" id="title" class="form-control" name="title" placeholder="Write Workout Title " required>
+    </div>
+
+    <div class="col-md-12">
+        <label for="description" class="form-label">Description</label>
+        <textarea name="description" id="description" class="form-control" rows="10" placeholder="Write workout instruction----" required></textarea>
+    </div>
+
+    <div class="col-md-12">
+        <button type="submit" class="btn btn-primary"> Save Workout Plan </button>
+        <a href="{% url 'admin_workout_plans_list' %}" class="btn btn-secondary"> Cancel </a>
+    </div>
+</form>
+
+{% endblock %}
