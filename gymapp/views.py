@@ -52,7 +52,18 @@ def admin_required(view_func):
 
 @admin_required
 def admin_dashboard(request):
-    return render(request, 'admin_dashboard.html')
+    total_members       = MemberProfile.objects.count()
+    active_memberships  = MemberProfile.objects.filter(membership_end__gte=timezone.now().date()).count()
+    today_registrations = MemberProfile.objects.filter(join_date=timezone.now().date()).count()
+    pending_payment     = Payment.objects.filter(status='PENDING').count()
+    
+    context = {
+        'total_members'      : total_members,
+        'active_memberships' : active_memberships,
+        'today_registrations': today_registrations,
+        'pending_payment'    : pending_payment
+    }
+    return render(request, 'admin_dashboard.html', context)
 
 
 def logout_view(request):
