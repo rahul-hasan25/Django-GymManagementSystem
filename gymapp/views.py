@@ -572,3 +572,20 @@ def admin_payment_add(request):
         messages.success(request, 'Payment recorded successfully!')
         return redirect('admin_payments_list')
     return render(request, 'admin_payment_form.html', {'members':members, 'plans':plans})
+
+
+
+
+
+
+
+
+
+
+#------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>
+# MEMBER Attendance
+@member_required
+def member_attendance(request):
+    member_profile = MemberProfile.objects.get(user=request.user)
+    attendances    = Attendance.objects.filter(member=member_profile).order_by('-date')
+    return render(request, 'member_attendance.html', {'attendances':attendances})
