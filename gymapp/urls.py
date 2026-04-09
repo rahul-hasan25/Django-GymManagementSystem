@@ -40,4 +40,9 @@ urlpatterns = [
     #ADMIN Payments
     path('admin_payments/', views.admin_payments_list, name='admin_payments_list'),
     path('admin_payment_add/', views.admin_payment_add, name='admin_payment_add'),
+    
+    
+    #MEMBER
+    path('member-login/', views.member_login_view, name='member_login_view'),
+    path('member_dashboard/', views.member_dashboard, name='member_dashboard'),
 ]

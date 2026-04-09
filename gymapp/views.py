@@ -50,6 +50,40 @@ def admin_required(view_func):
         return view_func(request, *args, **kwargs)
     return wrapper
 
+
+# MEMBER Decorator
+def member_login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=username, password=password)
+        if user is not None and getattr(user, 'role', None) == 'MEMBER':
+            login(request, user)
+            messages.success(request, 'Logged in successfully!')
+            return redirect('member_dashboard')
+        else:
+            messages.error(request, 'Invalid credential or not a member')
+            return redirect('member_login_view')
+    return render(request, 'member_login.html')
+
+
+def member_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated or getattr(request.user, 'role', None) != 'MEMBER':
+            messages.error(request, 'You must be a Member to access this page.')
+            return redirect('member_login_view')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+@member_required
+def member_dashboard(request):
+    return render(request, 'member_dashboard.html')
+
+
+
+
 @admin_required
 def admin_dashboard(request):
     total_members       = MemberProfile.objects.count()
