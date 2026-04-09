@@ -37,4 +37,7 @@ urlpatterns = [
     path('admin_workout_plans/', views.admin_workout_plans_list, name='admin_workout_plans_list'),
     path('admin_workout_plan_add/', views.admin_workout_plan_add, name='admin_workout_plan_add'),
     path('admin_workout_plan_delete/<int:plan_id>/', views.admin_workout_plan_delete, name='admin_workout_plan_delete'),
+    #ADMIN Payments
+    path('admin_payments/', views.admin_payments_list, name='admin_payments_list'),
+    path('admin_payment_add/', views.admin_payment_add, name='admin_payment_add'),
 ]
