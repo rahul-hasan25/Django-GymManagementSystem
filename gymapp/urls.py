@@ -47,4 +47,6 @@ urlpatterns = [
     path('member_dashboard/', views.member_dashboard, name='member_dashboard'),
     #MEMBER Attendace
     path('member_attendance/', views.member_attendance, name='member_attendance'),
+    #MEMBER_Membership
+    path('member_membership/', views.member_membership, name='member_membership'),
 ]
