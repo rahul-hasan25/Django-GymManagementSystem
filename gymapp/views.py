@@ -629,6 +629,7 @@ def member_membership(request):
 
 
 
+#MEMBER Payments
 @member_required
 def member_payments(request):
     member_profile = MemberProfile.objects.get(user=request.user)
@@ -636,8 +637,58 @@ def member_payments(request):
     return render(request, 'member_payments.html', {'payments': payments})
 
 
+#MEMBER Workout Plan
 @member_required
 def member_workout_plan(request):
     member_profile = MemberProfile.objects.get(user=request.user)
     workout_plans  = WorkoutPlan.objects.filter(member=member_profile).order_by('-created_at')
     return render(request, 'member_workout_plans.html', {'workout_plans':workout_plans})
+
+
+
+
+# MEMBER Profile
+@member_required
+def member_profile(request):
+    member = request.user.member_profile
+    return render(request, 'member_profile.html', {'member':member})
+
+
+#MEMBER Profile Edit
+@member_required
+def member_profile_edit(request):
+    member = request.user.member_profile
+    if request.method == 'POST':
+        member.full_name = request.POST.get('full_name')
+        member.mobile    = request.POST.get('mobile')
+        member.age       = request.POST.get('age')
+        member.gender    = request.POST.get('gender')
+        member.address   = request.POST.get('address')
+        
+        member.save()
+        messages.success(request, 'Profile Updated Successfully!')
+        return redirect('member_profile')
+    return render(request, 'member_profile_edit.html', {'member': member})
+
+
+#MEMBER Change Password
+@member_required
+def member_change_password(request):
+    if request.method == 'POST':
+        current_password = request.POST.get('current_password')
+        new_password     = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if not request.user.check_password(current_password):
+            messages.error(request, 'Current Password is Incorrect')
+            return redirect('member_change_password')
+        
+        if new_password != confirm_password:
+            messages.error(request, 'New Password and Confirm Password do not match!')
+            return redirect('member_change_password')
+        
+        request.user.set_password(new_password)
+        request.user.save()
+        messages.success(request, 'Password Changed Successfully. Please log in again!')
+        return redirect('member_login_view')
+    return render(request, 'member_change_password.html')

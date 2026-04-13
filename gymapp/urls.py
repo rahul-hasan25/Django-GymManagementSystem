@@ -53,4 +53,10 @@ urlpatterns = [
     path('member_payments/', views.member_payments, name='member_payments'),
     #MEMBER Workout Plan
     path('member_workout_plan/', views.member_workout_plan, name='member_workout_plan'),
+    #MEMBER Profile
+    path('member_profile/', views.member_profile, name='member_profile'),
+    #MEMBER Profile Edit
+    path('member_profile_edit/', views.member_profile_edit, name='member_profile_edit'),
+    #MEMBER Change Password
+    path('member_change_password', views.member_change_password, name='member_change_password'),
 ]
