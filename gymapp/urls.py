@@ -49,4 +49,8 @@ urlpatterns = [
     path('member_attendance/', views.member_attendance, name='member_attendance'),
     #MEMBER_Membership
     path('member_membership/', views.member_membership, name='member_membership'),
+    #MEMBER Payments
+    path('member_payments/', views.member_payments, name='member_payments'),
+    #MEMBER Workout Plan
+    path('member_workout_plan/', views.member_workout_plan, name='member_workout_plan'),
 ]
